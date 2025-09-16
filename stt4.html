@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speech-to-Text Application</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom styles for the listening animation */
+        .listening {
+            background-color: #22c55e; /* green-500 */
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(34, 197, 94, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(34, 197, 94, 0); }
+        }
+        /* Basic dark mode support from Tailwind */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* NEW: Add smooth scrolling behavior */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-100 dark:bg-gray-900 flex flex-col items-center justify-center min-h-screen py-10">
+
+    <div class="w-full max-w-2xl mx-4 mb-10">
+        <h2 class="text-2xl font-bold text-center text-gray-800 dark:text-white mb-6">How It Works ⚙️</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <a href="#languageSelect" class="block bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0 h-8 w-8 flex items-center justify-center bg-indigo-500 rounded-full text-white font-bold text-lg mr-4">1</div>
+                    <div>
+                        <h3 class="font-semibold text-gray-800 dark:text-white text-lg">Select Your Language</h3>
+                        <p class="text-gray-600 dark:text-gray-400 mt-1 text-sm">Choose your preferred language from the dropdown menu.</p>
+                    </div>
+                </div>
+            </a>
+
+            <a href="#startButton" class="block bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0 h-8 w-8 flex items-center justify-center bg-indigo-500 rounded-full text-white font-bold text-lg mr-4">2</div>
+                    <div>
+                        <h3 class="font-semibold text-gray-800 dark:text-white text-lg">Start and Allow</h3>
+                        <p class="text-gray-600 dark:text-gray-400 mt-1 text-sm">Click "Start Listening" and grant microphone permission.</p>
+                    </div>
+                </div>
+            </a>
+
+            <a href="#transcriptEl" class="block bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0 h-8 w-8 flex items-center justify-center bg-indigo-500 rounded-full text-white font-bold text-lg mr-4">3</div>
+                    <div>
+                        <h3 class="font-semibold text-gray-800 dark:text-white text-lg">Speak Clearly</h3>
+                        <p class="text-gray-600 dark:text-gray-400 mt-1 text-sm">Speak into your microphone, and your words will appear below.</p>
+                    </div>
+                </div>
+            </a>
+
+            <a href="#stopButton" class="block bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300">
+                <div class="flex items-start">
+                    <div class="flex-shrink-0 h-8 w-8 flex items-center justify-center bg-indigo-500 rounded-full text-white font-bold text-lg mr-4">4</div>
+                    <div>
+                        <h3 class="font-semibold text-gray-800 dark:text-white text-lg">Stop and Review</h3>
+                        <p class="text-gray-600 dark:text-gray-400 mt-1 text-sm">Click "Stop Listening" to finalize the transcription.</p>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+
+    <div class="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-lg w-full max-w-2xl mx-4">
+        
+        <a href="i.html" class="text-indigo-500 dark:text-indigo-400 hover:underline text-sm mb-4 block">&larr; Back to Home</a>
+        <div class="text-center mb-6">
+            <h1 class="text-3xl font-bold text-gray-800 dark:text-white">Speech-to-Text 🎙️</h1>
+            <p class="text-gray-500 dark:text-gray-400 mt-1">Select your language, click start, and allow microphone access.</p>
+        </div>
+
+        <div class="flex items-center justify-center mb-4">
+            <div id="sttStatus" class="w-4 h-4 rounded-full bg-gray-400 transition-colors duration-300"></div>
+            <span id="statusText" class="ml-3 text-gray-600 dark:text-gray-300 font-medium">Active status</span>
+        </div>
+        
+        <div class="flex flex-col sm:flex-row justify-between items-center mb-4 p-3 bg-gray-100 dark:bg-gray-700 rounded-lg">
+            <div class="flex items-center mb-2 sm:mb-0">
+                <label for="languageSelect" class="text-sm font-medium text-gray-600 dark:text-gray-300 mr-2">Language:</label>
+                <select id="languageSelect" class="rounded-md border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 focus:border-indigo-500 focus:ring-indigo-500 shadow-sm text-sm">
+                </select>
+            </div>
+            <div class="flex items-center space-x-2">
+                <span class="text-sm font-medium text-gray-600 dark:text-gray-300">Font Size:</span>
+                <button id="decreaseFontBtn" title="Decrease font size" class="w-8 h-8 flex items-center justify-center bg-gray-200 dark:bg-gray-600 rounded-full font-bold text-lg text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-500 transition-colors">-</button>
+                <button id="increaseFontBtn" title="Increase font size" class="w-8 h-8 flex items-center justify-center bg-gray-200 dark:bg-gray-600 rounded-full font-bold text-lg text-gray-700 dark:text-gray-200 hover:bg-gray-300 dark:hover:bg-gray-500 transition-colors">+</button>
+            </div>
+        </div>
+
+        <div id="transcriptEl" class="w-full min-h-[150px] p-4 border-2 border-gray-200 dark:border-gray-600 rounded-lg bg-gray-50 dark:bg-gray-700 text-gray-500 dark:text-gray-400 whitespace-pre-wrap transition-all duration-300" style="font-size: 16px;">
+            Press "Start Listening" and begin speaking...
+        </div>
+
+        <div class="flex justify-center space-x-4 mt-6">
+            <button id="startButton" class="px-6 py-3 bg-green-500 text-white font-semibold rounded-lg shadow-md hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-400 focus:ring-opacity-75 transition-all disabled:opacity-50 disabled:cursor-not-allowed">
+                Start Listening
+            </button>
+            <button id="stopButton" class="px-6 py-3 bg-red-500 text-white font-semibold rounded-lg shadow-md hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-75 transition-all disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                Stop Listening
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        // --- Setup and Initialization ---
+        
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!SpeechRecognition) {
+            alert("Sorry, your browser does not support the Web Speech API. Try Chrome or Edge.");
+        }
+        
+        const recognition = new SpeechRecognition();
+        
+        // Get DOM elements
+        const startButton = document.getElementById('startButton');
+        const stopButton = document.getElementById('stopButton');
+        const sttStatus = document.getElementById('sttStatus');
+        const statusText = document.getElementById('statusText');
+        const transcriptEl = document.getElementById('transcriptEl');
+        const languageSelect = document.getElementById('languageSelect');
+        const increaseFontBtn = document.getElementById('increaseFontBtn');
+        const decreaseFontBtn = document.getElementById('decreaseFontBtn');
+
+        const languages = [
+            { name: 'English (US)', code: 'en-US' },
+            // Indian Languages
+            { name: 'Hindi (India)', code: 'hi-IN' },
+            { name: 'Bengali (India)', code: 'bn-IN' },
+            { name: 'Gujarati (India)', code: 'gu-IN' },
+            { name: 'Kannada (India)', code: 'kn-IN' },
+            { name: 'Malayalam (India)', code: 'ml-IN' },
+            { name: 'Marathi (India)', code: 'mr-IN' },
+            { name: 'Odia (India)', code: 'or-IN' },
+            { name: 'Punjabi (India)', code: 'pa-IN' },
+            { name: 'Tamil (India)', code: 'ta-IN' },
+            { name: 'Telugu (India)', code: 'te-IN' },
+            { name: 'Urdu (India)', code: 'ur-IN' },
+            // World Languages
+            { name: 'Arabic (Egypt)', code: 'ar-EG' },
+            { name: 'Chinese (Mandarin, Simplified)', code: 'zh-CN' },
+            { name: 'Dutch (Netherlands)', code: 'nl-NL' },
+            { name: 'French (France)', code: 'fr-FR' },
+            { name: 'German (Germany)', code: 'de-DE' },
+            { name: 'Indonesian (Indonesia)', code: 'id-ID' },
+            { name: 'Italian (Italy)', code: 'it-IT' },
+            { name: 'Japanese (Japan)', code: 'ja-JP' },
+            { name: 'Korean (South Korea)', code: 'ko-KR' },
+            { name: 'Portuguese (Brazil)', code: 'pt-BR' },
+            { name: 'Russian (Russia)', code: 'ru-RU' },
+            { name: 'Spanish (Spain)', code: 'es-ES' },
+            { name: 'Turkish (Turkey)', code: 'tr-TR' },
+            { name: 'Vietnamese (Vietnam)', code: 'vi-VN' },
+        ];
+
+        // Populate the dropdown with language options
+        languages.forEach(language => {
+            const option = document.createElement('option');
+            option.value = language.code;
+            option.textContent = language.name;
+            if (language.code === 'hi-IN') {
+                option.selected = true;
+            }
+            languageSelect.appendChild(option);
+        });
+
+        // State variables
+        let isListening = false;
+        let finalTranscript = '';
+
+        // Configure recognition settings
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        recognition.lang = languageSelect.value;
+
+        // --- Speech-to-Text Logic ---
+
+        recognition.onstart = () => {
+            isListening = true;
+            sttStatus.classList.add('listening');
+            statusText.textContent = 'Listening...';
+            startButton.disabled = true;
+            stopButton.disabled = false;
+            languageSelect.disabled = true;
+            transcriptEl.textContent = 'Listening...';
+            transcriptEl.classList.remove('text-gray-500', 'dark:text-gray-400');
+        };
+
+        recognition.onresult = (event) => {
+            let interimTranscript = '';
+            for (let i = event.resultIndex; i < event.results.length; ++i) {
+                if (event.results[i].isFinal) {
+                    finalTranscript += event.results[i][0].transcript + '. ';
+                } else {
+                    interimTranscript += event.results[i][0].transcript;
+                }
+            }
+            transcriptEl.textContent = finalTranscript + interimTranscript;
+        };
+
+        recognition.onerror = (event) => {
+            console.error('Speech recognition error:', event.error);
+            sttStatus.classList.remove('listening');
+            statusText.textContent = `Error: ${event.error}`;
+        };
+
+        recognition.onend = () => {
+            isListening = false;
+            sttStatus.classList.remove('listening');
+            statusText.textContent = 'Idle';
+            startButton.disabled = false;
+            stopButton.disabled = true;
+            languageSelect.disabled = false; 
+            if (finalTranscript === '' && transcriptEl.textContent === 'Listening...') {
+                transcriptEl.textContent = 'Press "Start Listening" and begin speaking...';
+                transcriptEl.classList.add('text-gray-500', 'dark:text-gray-400');
+            }
+        };
+
+        // --- Event Listeners for Buttons & Controls ---
+
+        startButton.addEventListener('click', () => {
+            if (!isListening) {
+                finalTranscript = ''; 
+                transcriptEl.textContent = '';
+                try {
+                    recognition.start();
+                } catch(e) {
+                    console.error("Error starting recognition: ", e);
+                }
+            }
+        });
+
+        stopButton.addEventListener('click', () => {
+            if (isListening) {
+                recognition.stop();
+            }
+        });
+        
+        languageSelect.addEventListener('change', () => {
+            recognition.lang = languageSelect.value;
+        });
+
+        increaseFontBtn.addEventListener('click', () => {
+            const currentSize = parseFloat(window.getComputedStyle(transcriptEl).fontSize);
+            if (currentSize < 40) {
+                transcriptEl.style.fontSize = `${currentSize + 2}px`;
+            }
+        });
+
+        decreaseFontBtn.addEventListener('click', () => {
+            const currentSize = parseFloat(window.getComputedStyle(transcriptEl).fontSize);
+            if (currentSize > 10) {
+                transcriptEl.style.fontSize = `${currentSize - 2}px`;
+            }
+        });
+
+    </script>
+</body>
+</html>

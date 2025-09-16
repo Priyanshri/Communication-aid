@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Communication Aid - Bridging Every Conversation</title>
+
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600&display=swap"
+        rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .font-poppins {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a0aec0;
+        }
+
+        /* Modal transition */
+        .modal-transition {
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .modal-hidden {
+            opacity: 0;
+            transform: scale(0.95);
+            pointer-events: none;
+        }
+
+        .modal-visible {
+            opacity: 1;
+            transform: scale(1);
+            pointer-events: auto;
+        }
+
+        /* FAQ answer animation */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        details[open]>*:not(summary) {
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        /* --- New Animation Styles --- */
+        .animated-item {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+            transition-delay: var(--delay, 0s);
+        }
+
+        .animated-item.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+
+<body class="bg-slate-50 text-slate-700">
+
+    <header id="main-header" class="fixed top-0 left-0 right-0 z-50 bg-black shadow-md">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="flex items-center space-x-3">
+                <div class="bg-pink-500 text-white p-2 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                        <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                        <line x1="12" y1="19" x2="12" y2="23"></line>
+                    </svg>
+                </div>
+                <span id="logo-text" class="text-2xl font-bold text-white">Communication Aid</span>
+            </a>
+
+            <ul class="hidden md:flex items-center space-x-12">
+                <li><a href="#home"
+                        class="nav-link font-poppins text-lg font-semibold text-white hover:text-pink-400 transition-colors">Home</a>
+                </li>
+                <li><a href="#features"
+                        class="nav-link font-poppins text-lg font-semibold text-white hover:text-pink-400 transition-colors">Features</a>
+                </li>
+                <li><a href="#faq"
+                        class="nav-link font-poppins text-lg font-semibold text-white hover:text-pink-400 transition-colors">FAQ</a>
+                </li>
+            </ul>
+
+            <div class="hidden md:flex items-center space-x-3">
+                <button id="login-btn"
+                    class="nav-link font-poppins text-lg font-semibold text-white hover:text-pink-400 transition-colors px-4 py-2 rounded-md">Log
+                    In</button>
+                <button id="signup-btn"
+                    class="bg-pink-500 text-white font-semibold px-5 py-2 rounded-lg hover:bg-pink-600 transition-all shadow-sm hover:shadow-md">Sign
+                    Up</button>
+            </div>
+
+            <button class="md:hidden text-white" id="mobile-menu-btn" title="Open mobile menu"
+                aria-label="Open mobile menu">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+        </nav>
+    </header>
+
+    <main>
+        <section id="home"
+            class="relative h-screen flex items-center justify-center text-center text-white overflow-hidden">
+            <div class="absolute top-0 left-0 w-full h-full z-0">
+                <video class="absolute top-0 left-0 w-full h-full object-cover" autoplay muted loop>
+                    <source src="a.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <div class="absolute top-0 left-0 w-full h-full bg-black opacity-60"></div>
+            </div>
+
+            <div class="relative z-10 container mx-auto px-6">
+                <h1 class="animated-item text-5xl md:text-6xl font-bold leading-tight drop-shadow-lg"
+                    style="--delay: 0.1s;">
+                    Bridging Every<br>
+                    <span class="text-pink-400">Conversation</span> Seamlessly.
+                </h1>
+                <p class="animated-item mt-6 text-lg text-slate-200 max-w-3xl mx-auto drop-shadow-md"
+                    style="--delay: 0.2s;">
+                    Empowering clear, effective communication for everyone. Our tools effortlessly translate text,
+                    voice, and sign language in real-time.
+                </p>
+                <div class="animated-item mt-10" style="--delay: 0.3s;">
+                    <a href="#features"
+                        class="bg-pink-500 text-white font-semibold px-8 py-4 rounded-lg hover:bg-pink-600 transition-all shadow-lg hover:shadow-pink-300/50 text-lg">
+                        Explore Features
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="py-24 bg-slate-50">
+            <div class="container mx-auto px-6">
+                <div class="text-center max-w-3xl mx-auto">
+                    <h2 class="animated-item text-4xl font-bold text-slate-900">Your Communication Toolkit</h2>
+                    <p class="animated-item mt-4 text-lg text-slate-600" style="--delay: 0.1s;">
+                        Choose the tool that fits your needs. Each one is designed for simplicity, accuracy, and ease of
+                        use.
+                    </p>
+                </div>
+
+                <div class="mt-16 grid md:grid-cols-3 gap-8">
+                    <a href="tts9.html" class="animated-item" style="--delay: 0.2s;">
+                        <div
+                            class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border border-slate-100 h-full">
+                            <div
+                                class="bg-pink-100 text-pink-600 w-16 h-16 rounded-xl flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-2xl font-bold text-slate-800 mt-6">Text to Speech</h3>
+                            <p class="mt-2 text-slate-600">Type your message and let our natural-sounding voices speak
+                                it aloud. Perfect for quick and clear announcements.</p>
+                        </div>
+                    </a>
+
+                    <a href="stt4.html" class="animated-item" style="--delay: 0.3s;">
+                        <div
+                            class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border border-slate-100">
+                            <div
+                                class="bg-emerald-100 text-emerald-600 w-16 h-16 rounded-xl flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path>
+                                    <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                                    <line x1="12" y1="19" x2="12" y2="23"></line>
+                                </svg>
+                            </div>
+                            <h3 class="text-2xl font-bold text-slate-800 mt-6">Speech to Text</h3>
+                            <p class="mt-2 text-slate-600">Speak into your microphone and see your words transcribed
+                                into text in real-time. Ideal for understanding conversations.</p>
+                        </div>
+                    </a>
+
+                    <a href="hand.html" class="animated-item" style="--delay: 0.4s;">
+                        <div
+                            class="bg-white p-8 rounded-2xl shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 border border-slate-100">
+                            <div
+                                class="bg-amber-100 text-amber-600 w-16 h-16 rounded-xl flex items-center justify-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                                    fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <path d="M18 10a1.5 1.5 0 0 1-3 0v-1a1.5 1.5 0 0 1 3 0v1Z"></path>
+                                    <path d="M15 10a1.5 1.5 0 0 1-3 0v-4a1.5 1.5 0 0 1 3 0v4Z"></path>
+                                    <path d="M12 10a1.5 1.5 0 0 1-3 0V7a1.5 1.5 0 0 1 3 0v3Z"></path>
+                                    <path d="M9 10a1.5 1.5 0 0 1-3 0V6a1.5 1.5 0 0 1 3 0v4Z"></path>
+                                    <path d="M6 10a1.5 1.5 0 0 1-3 0V7a1.5 1.5 0 0 1 3 0v3Z"></path>
+                                    <path d="M3 14v-1a2 2 0 1 1 4 0v1"></path>
+                                    <path d="M3.5 18.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"></path>
+                                    <path d="M7 14v1a2 2 0 1 0 4 0v-1"></path>
+                                    <path d="M7.5 18.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Z"></path>
+                                    <path d="M11 14v2a2 2 0 1 0 4 0v-2"></path>
+                                    <path d="M11.5 18.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Z"></path>
+                                    <path d="M15 14v1a2 2 0 1 0 4 0v-1"></path>
+                                    <path d="M15.5 18.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3Z"></path>
+                                </svg>
+                            </div>
+                            <h3 class="text-2xl font-bold text-slate-800 mt-6">Sign Language AI</h3>
+                            <p class="mt-2 text-slate-600">Our cutting-edge AI recognizes sign language from your camera
+                                and translates it into text or speech. (Coming Soon)</p>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <section id="faq" class="py-24 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="text-center max-w-3xl mx-auto">
+                    <h2 class="animated-item text-4xl font-bold text-slate-900">Frequently Asked Questions</h2>
+                    <p class="animated-item mt-4 text-lg text-slate-600" style="--delay: 0.1s;">
+                        Have questions? We've got answers. If you don't see your query here, feel free to reach out to
+                        our support team.
+                    </p>
+                </div>
+
+                <div class="mt-16 max-w-4xl mx-auto space-y-4">
+                    <details class="animated-item group bg-slate-50 p-6 rounded-lg" style="--delay: 0.2s;">
+                        <summary
+                            class="flex justify-between items-center font-semibold text-slate-800 cursor-pointer list-none">
+                            <span>Who can benefit from using Communication Aid?</span>
+                            <span class="transition-transform duration-300 group-open:rotate-180">
+                                <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor"
+                                    stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                    viewBox="0 0 24 24" width="24">
+                                    <path d="M6 9l6 6 6-6"></path>
+                                </svg>
+                            </span>
+                        </summary>
+                        <p class="text-slate-600 mt-4">
+                            Our tools are designed for a wide range of users, including individuals with speech or
+                            hearing impairments, people in multilingual environments, public speakers, educators, and
+                            anyone looking to make communication more accessible and efficient.
+                        </p>
+                    </details>
+
+                    <details class="animated-item group bg-slate-50 p-6 rounded-lg" style="--delay: 0.3s;">
+                        <summary
+                            class="flex justify-between items-center font-semibold text-slate-800 cursor-pointer list-none">
+                            <span>Do I need to install any software?</span>
+                            <span class="transition-transform duration-300 group-open:rotate-180">
+                                <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor"
+                                    stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                    viewBox="0 0 24 24" width="24">
+                                    <path d="M6 9l6 6 6-6"></path>
+                                </svg>
+                            </span>
+                        </summary>
+                        <p class="text-slate-600 mt-4">
+                            No, Communication Aid is a fully web-based application. You can access all our features
+                            directly from your browser on any device with an internet connection. There’s no need to
+                            download or install anything.
+                        </p>
+                    </details>
+
+                    <details class="animated-item group bg-slate-50 p-6 rounded-lg" style="--delay: 0.4s;">
+                        <summary
+                            class="flex justify-between items-center font-semibold text-slate-800 cursor-pointer list-none">
+                            <span>How accurate is the speech-to-text transcription?</span>
+                            <span class="transition-transform duration-300 group-open:rotate-180">
+                                <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor"
+                                    stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                    viewBox="0 0 24 24" width="24">
+                                    <path d="M6 9l6 6 6-6"></path>
+                                </svg>
+                            </span>
+                        </summary>
+                        <p class="text-slate-600 mt-4">
+                            We use state-of-the-art AI models to provide highly accurate transcriptions in real-time.
+                            Accuracy can be affected by factors like background noise and speaker clarity, but our
+                            system is continuously learning and improving.
+                        </p>
+                    </details>
+
+                    <details class="animated-item group bg-slate-50 p-6 rounded-lg" style="--delay: 0.5s;">
+                        <summary
+                            class="flex justify-between items-center font-semibold text-slate-800 cursor-pointer list-none">
+                            <span>When will the Sign Language AI feature be available?</span>
+                            <span class="transition-transform duration-300 group-open:rotate-180">
+                                <svg fill="none" height="24" shape-rendering="geometricPrecision" stroke="currentColor"
+                                    stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                    viewBox="0 0 24 24" width="24">
+                                    <path d="M6 9l6 6 6-6"></path>
+                                </svg>
+                            </span>
+                        </summary>
+                        <p class="text-slate-600 mt-4">
+                            Our Sign Language AI is currently in active development. We are working hard to ensure it's
+                            accurate and reliable before its public release. Please sign up for our newsletter to
+                            receive updates on its launch!
+                        </p>
+                    </details>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bg-slate-800 text-slate-300 pt-16 pb-8">
+        <div class="container mx-auto px-6">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div class="col-span-1 md:col-span-2">
+                    <h3 class="text-lg font-semibold text-white">Communication Aid</h3>
+                    <p class="mt-4 max-w-md">Connecting worlds, one conversation at a time. Our mission is to break down
+                        communication barriers through accessible technology.</p>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-white">Quick Links</h3>
+                    <ul class="mt-4 space-y-2">
+                        <li><a href="#home" class="hover:text-pink-400 transition-colors">Home</a></li>
+                        <li><a href="#features" class="hover:text-pink-400 transition-colors">Features</a></li>
+                        <li><a href="#" class="hover:text-pink-400 transition-colors">About Us</a></li>
+                        <li><a href="#" class="hover:text-pink-400 transition-colors">Privacy Policy</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold text-white">Contact</h3>
+                    <ul class="mt-4 space-y-2">
+                        <li><a href="mailto:support@comm-aid.com"
+                                class="hover:text-pink-400 transition-colors">support@comm-aid.com</a></li>
+                    </ul>
+                    <div class="flex space-x-4 mt-4">
+                        <a href="#" class="text-slate-400 hover:text-white"><svg xmlns="http://www.w3.org/2000/svg"
+                                width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6">
+                                <path
+                                    d="M22 4s-.7 2.1-2 3.4c1.6 1.4 2.8 3.2 2.8 5.1 0 1.4-.6 2.8-1.5 3.9C20.3 21.8 16.5 23 12 23c-4.5 0-8.3-1.2-9.5-2.6C1.4 18.8 1 17.4 1 16c0-2 1.2-3.8 2.8-5.1-1.3-1.3-2-3.4-2-3.4s.7-.4 2.1.7c.9-.3 2.1-.4 3.5-.4h3.8c1.4 0 2.6.1 3.5.4 1.4-1.1 2.1-.7 2.1-.7z">
+                                </path>
+                            </svg></a>
+                        <a href="#" class="text-slate-400 hover:text-white"><svg xmlns="http://www.w3.org/2000/svg"
+                                width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6">
+                                <path
+                                    d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z">
+                                </path>
+                                <rect x="2" y="9" width="4" height="12"></rect>
+                                <circle cx="4" cy="4" r="2"></circle>
+                            </svg></a>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-12 border-t border-slate-700 pt-6 text-center text-slate-400">
+                <p>&copy; 2025 Communication Aid. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div id="auth-modal"
+        class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4 modal-transition modal-hidden">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md relative">
+            <button id="close-modal-btn" class="absolute top-4 right-4 text-slate-400 hover:text-slate-600"
+                title="Close modal" aria-label="Close modal">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+            <div id="login-form" class="p-8 md:p-10">
+                <h2 class="text-3xl font-bold text-slate-800 text-center">Welcome Back!</h2>
+                <form class="mt-8 space-y-6">
+                    <div>
+                        <label for="login-email" class="text-sm font-semibold text-slate-700">Email Address</label>
+                        <input type="email" id="login-email"
+                            class="w-full mt-2 px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+                            placeholder="you@example.com" required>
+                    </div>
+                    <div>
+                        <label for="login-password" class="text-sm font-semibold text-slate-700">Password</label>
+                        <input type="password" id="login-password"
+                            class="w-full mt-2 px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+                            placeholder="••••••••" required>
+                    </div>
+                    <button type="submit"
+                        class="w-full bg-pink-500 text-white font-semibold py-3 rounded-lg hover:bg-pink-600 transition-all shadow-sm">Log
+                        In</button>
+                </form>
+                <p class="text-center text-sm text-slate-600 mt-6">
+                    Don't have an account? <a href="#" id="show-signup-link"
+                        class="font-semibold text-pink-600 hover:underline">Sign up</a>
+                </p>
+            </div>
+            <div id="signup-form" class="p-8 md:p-10 hidden">
+                <h2 class="text-3xl font-bold text-slate-800 text-center">Create an Account</h2>
+                <form class="mt-8 space-y-6">
+                    <div>
+                        <label for="signup-name" class="text-sm font-semibold text-slate-700">Full Name</label>
+                        <input type="text" id="signup-name"
+                            class="w-full mt-2 px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+                            placeholder="John Doe" required>
+                    </div>
+                    <div>
+                        <label for="signup-email" class="text-sm font-semibold text-slate-700">Email Address</label>
+                        <input type="email" id="signup-email"
+                            class="w-full mt-2 px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+                            placeholder="you@example.com" required>
+                    </div>
+                    <div>
+                        <label for="signup-password" class="text-sm font-semibold text-slate-700">Password</label>
+                        <input type="password" id="signup-password"
+                            class="w-full mt-2 px-4 py-3 border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-500"
+                            placeholder="8+ characters" required>
+                    </div>
+                    <button type="submit"
+                        class="w-full bg-pink-500 text-white font-semibold py-3 rounded-lg hover:bg-pink-600 transition-all shadow-sm">Create
+                        Account</button>
+                </form>
+                <p class="text-center text-sm text-slate-600 mt-6">
+                    Already have an account? <a href="#" id="show-login-link"
+                        class="font-semibold text-pink-600 hover:underline">Log in</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <button id="back-to-top-btn" title="Go to top"
+        class="fixed bottom-5 right-5 z-50 p-3 bg-pink-500 text-white rounded-full shadow-lg hover:bg-pink-600 focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-opacity-50 transition-transform transform scale-0 duration-300">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="19" x2="12" y2="5"></line>
+            <polyline points="5 12 12 5 19 12"></polyline>
+        </svg>
+    </button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Modal Functionality
+            const authModal = document.getElementById('auth-modal');
+            const loginBtn = document.getElementById('login-btn');
+            const signupBtn = document.getElementById('signup-btn');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+            const loginForm = document.getElementById('login-form');
+            const signupForm = document.getElementById('signup-form');
+            const showSignupLink = document.getElementById('show-signup-link');
+            const showLoginLink = document.getElementById('show-login-link');
+
+            const openModal = () => authModal.classList.replace('modal-hidden', 'modal-visible');
+            const closeModal = () => authModal.classList.replace('modal-visible', 'modal-hidden');
+            const showLoginForm = () => { loginForm.classList.remove('hidden'); signupForm.classList.add('hidden'); };
+            const showSignupForm = () => { signupForm.classList.remove('hidden'); loginForm.classList.add('hidden'); };
+
+            loginBtn.addEventListener('click', () => { showLoginForm(); openModal(); });
+            signupBtn.addEventListener('click', () => { showSignupForm(); openModal(); });
+            closeModalBtn.addEventListener('click', closeModal);
+            authModal.addEventListener('click', (e) => { if (e.target === authModal) closeModal(); });
+            document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+            showSignupLink.addEventListener('click', (e) => { e.preventDefault(); showSignupForm(); });
+            showLoginLink.addEventListener('click', (e) => { e.preventDefault(); showLoginForm(); });
+
+            // Back to Top Button Functionality
+            const backToTopBtn = document.getElementById('back-to-top-btn');
+            window.addEventListener('scroll', () => {
+                if (window.scrollY > 300) {
+                    backToTopBtn.classList.remove('scale-0');
+                } else {
+                    backToTopBtn.classList.add('scale-0');
+                }
+            });
+            backToTopBtn.addEventListener('click', () => window.scrollTo({ top: 0, behavior: 'smooth' }));
+
+            // --- New Animation on Scroll Functionality ---
+            const animatedItems = document.querySelectorAll('.animated-item');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.1 // Trigger when 10% of the item is visible
+            });
+
+            animatedItems.forEach(item => {
+                observer.observe(item);
+            });
+
+            // Trigger animation for hero section immediately on load
+            document.querySelectorAll('#home .animated-item').forEach(item => {
+                item.classList.add('is-visible');
+            });
+        });
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text to Speech Converter</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- Root Variables for Theme --- */
+        :root {
+            --primary-dark: #2a2a2a;
+            --secondary-dark: #3a3a3a;
+            --accent-pastel-green: #a2d9a2; /* NEW: Pastel Green */
+            --neon-glow-green: #39ff14; /* For hover effect */
+            --text-light: #e0e0e0;
+            --text-medium: #a0a0a0;
+            --border-dark: #505050;
+            --shadow-dark: rgba(0, 0, 0, 0.4);
+            --font-main: 'Poppins', sans-serif;
+            --border-radius-lg: 15px;
+            --border-radius-md: 10px;
+            --border-radius-sm: 5px;
+        }
+
+        /* --- Base Styling --- */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: var(--primary-dark);
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            margin: 0;
+            padding: 3rem 1rem;
+            color: var(--text-light);
+            box-sizing: border-box;
+            position: relative;
+            /* overflow: hidden; */ /* REMOVED to make page scrollable */
+        }
+
+        /* --- Background Wave Image --- */
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwMCIgaGVpZ2h0PSIxMDAwIiB2aWV3Qm94PSIwIDAgMjAwMCAxMDAwIiBmaWxsPSJub25lIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciPgo8cGF0aCBvcGFjaXR5PSIwLjMiIGQ9Ik0wIDUwMEMyMDAgNDAwIDQwMCAzNTAgNjAwIDQ1MEM4MDAgNTUwIDEwMDAgNjAwIDEyMDAgNTAwTDE2MDAgMzAwTDIwMDAgNDUwVjEwMDBIMFY1MDJaIiBmaWxsPSIjYTJkOWEyIi8+CjxwYXRoIG9wYWNpdHk9IjAuMiIgZD0iMjAwMCAyNTBDMTgwMCAzMDAgMTYwMCA0MDAgMTQwMCAzNTBDMTIwMCAzMDAgMTAwMCAyMDAgODAwIDI1MEM2MDAgMzAwIDQwMCA0MDAgMjAwIDM1MEMxMDAgMzAwIDAgMjUwIDAgMjUwVjEwMDBIMjAwMFYyNTBaIiBmaWxsPSIjYTJkOWEyIi8+Cjwvc3ZnPg==');
+            background-size: cover;
+            background-position: center;
+            opacity: 0.1;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* --- Main Container --- */
+        .container {
+            background-color: var(--secondary-dark);
+            padding: 2.5rem;
+            border-radius: var(--border-radius-lg);
+            box-shadow: 0 10px 30px var(--shadow-dark);
+            border: 1px solid var(--border-dark);
+            width: 100%;
+            max-width: 700px;
+            text-align: center;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* --- Typography --- */
+        h1 {
+            color: var(--text-light);
+            font-weight: 700;
+            margin-bottom: 2.5rem;
+            font-size: 2.2rem;
+        }
+
+        h2 {
+           color: var(--text-light);
+           margin-bottom: 1.5rem;
+           font-size: 1.5rem;
+           font-weight: 600;
+           text-align: center;
+        }
+
+        h3 {
+            margin: 0 0 0.5rem 0;
+            font-size: 1.1rem;
+            color: var(--accent-pastel-green); /* Changed to pastel green */
+            font-weight: 600;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-medium);
+        }
+
+        /* --- Home Link Style --- */
+        .home-link {
+            display: flex;
+            align-items: center;
+            width: fit-content;
+            text-align: left;
+            margin-bottom: 1.5rem;
+            color: var(--accent-pastel-green); /* Changed to pastel green */
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+            font-size: 1.1rem;
+        }
+        .home-link:hover {
+            color: #c1f0c1; /* Lighter pastel on hover */
+        }
+        .home-link::before {
+            content: '←';
+            margin-right: 8px;
+            font-size: 1.4em;
+            line-height: 1;
+        }
+        
+        /* --- Section Styling --- */
+        .page-section {
+            margin-bottom: 2rem;
+        }
+        
+        .tts-section {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border-dark);
+        }
+        
+        /* --- NEW: Floating Animation --- */
+        @keyframes floatAnimation {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+            100% { transform: translateY(0); }
+        }
+
+        /* --- How It Works Cards --- */
+        .cards-container {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: space-between;
+        }
+
+        .card-link {
+            text-decoration: none;
+            color: inherit;
+            flex: 1;
+            display: flex;
+        }
+        
+        .card {
+            background: var(--primary-dark);
+            border: 1px solid var(--border-dark);
+            border-radius: var(--border-radius-md);
+            padding: 1.5rem;
+            width: 100%;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            /* NEW: Applying animation */
+            animation: floatAnimation 4s ease-in-out infinite;
+        }
+        
+        /* NEW: Staggering animation delay for each card */
+        .cards-container .card-link:nth-child(2) .card {
+            animation-delay: 0.3s;
+        }
+        .cards-container .card-link:nth-child(3) .card {
+            animation-delay: 0.6s;
+        }
+
+        .card:hover {
+            animation-play-state: paused; /* Pause animation on hover */
+            transform: translateY(-8px); /* Lift card on hover */
+            /* NEW: Neon green glow effect on hover */
+            box-shadow: 0 0 10px var(--neon-glow-green), 
+                        0 0 20px var(--neon-glow-green),
+                        0 8px 25px rgba(0,0,0,0.5);
+        }
+
+        .card .card-number {
+            width: 35px;
+            height: 35px;
+            line-height: 35px;
+            border-radius: 50%;
+            background-color: var(--accent-pastel-green); /* Changed to pastel green */
+            color: var(--primary-dark);
+            font-weight: 700;
+            margin: 0 auto 1.2rem;
+            font-size: 1.1rem;
+        }
+
+        .card p {
+            font-size: 0.95rem;
+            color: var(--text-medium);
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        /* --- Form Elements --- */
+        textarea, select {
+            width: 100%;
+            padding: 1rem 1.2rem;
+            margin-bottom: 1rem;
+            border-radius: var(--border-radius-sm);
+            border: 1px solid var(--border-dark);
+            font-size: 1rem;
+            box-sizing: border-box;
+            background-color: var(--primary-dark);
+            color: var(--text-light);
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            font-family: var(--font-main);
+        }
+
+        textarea::placeholder, select option {
+            color: var(--text-medium);
+            opacity: 0.7;
+        }
+
+        textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--accent-pastel-green); /* Changed to pastel green */
+            box-shadow: 0 0 0 3px rgba(162, 217, 162, 0.3);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .control-group {
+            flex: 1;
+            min-width: 160px;
+            text-align: left;
+        }
+
+        input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 8px;
+            background: var(--border-dark);
+            border-radius: 5px;
+            outline: none;
+            margin-top: 10px;
+            transition: background 0.2s ease;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--accent-pastel-green); /* Changed to pastel green */
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(162, 217, 162, 0.5);
+            transition: background 0.2s ease;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--accent-pastel-green); /* Changed to pastel green */
+            cursor: pointer;
+            box-shadow: 0 0 5px rgba(162, 217, 162, 0.5);
+            transition: background 0.2s ease;
+        }
+        
+        .rate-pitch-value {
+            font-weight: 600;
+            color: var(--accent-pastel-green); /* Changed to pastel green */
+        }
+
+        /* --- Buttons & Status --- */
+        button#speak-button {
+            background-color: var(--accent-pastel-green); /* Changed to pastel green */
+            color: var(--primary-dark);
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: var(--border-radius-sm);
+            font-size: 1.1rem;
+            font-weight: 700;
+            font-family: var(--font-main);
+            cursor: pointer;
+            transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            box-shadow: 0 4px 10px rgba(162, 217, 162, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        button#speak-button:hover {
+            background-color: #c1f0c1; /* Lighter pastel on hover */
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(162, 217, 162, 0.5);
+        }
+
+        button#speak-button:disabled {
+            background-color: #555;
+            color: #bbb;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        #tts-status {
+            margin-top: 1.5rem;
+            font-style: italic;
+            color: var(--text-medium);
+            transition: color 0.3s ease;
+            font-size: 0.95rem;
+        }
+
+        #tts-status.speaking {
+            color: var(--accent-pastel-green); /* Changed to pastel green */
+            font-weight: 500;
+        }
+
+        /* --- Responsive Adjustments --- */
+        @media (max-width: 768px) {
+            .cards-container {
+                flex-direction: column;
+            }
+             .container {
+                padding: 1.5rem;
+            }
+            h1 { font-size: 1.8rem; margin-bottom: 2rem;}
+            h2 { font-size: 1.3rem; }
+            .home-link { font-size: 1rem; }
+        }
+
+        @media (max-width: 480px) {
+            .controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .control-group {
+                min-width: unset;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <a href="i.html" class="home-link">Back to Home</a>
+        <h1>Text-to-Speech Converter</h1>
+        
+        <div class="page-section how-it-works">
+            <h2>How It Works</h2>
+            <div class="cards-container">
+                <a href="#text-to-speak" class="card-link">
+                    <div class="card">
+                        <div class="card-number">1</div>
+                        <h3>Enter Text</h3>
+                        <p>Type or paste your text into the box below.</p>
+                    </div>
+                </a>
+                <a href="#voice-controls" class="card-link">
+                    <div class="card">
+                        <div class="card-number">2</div>
+                        <h3>Customize Voice</h3>
+                        <p>Select a language and adjust the speed & pitch.</p>
+                    </div>
+                </a>
+                <a href="#speak-button" class="card-link">
+                    <div class="card">
+                        <div class="card-number">3</div>
+                        <h3>Click Speak</h3>
+                        <p>Press the button to listen to the generated audio.</p>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <div class="page-section tts-section">
+            <h2>Try The Converter</h2>
+            <textarea id="text-to-speak" rows="5" placeholder="Enter text to speak..."></textarea>
+            
+            <div id="voice-controls" class="controls">
+                <div class="control-group">
+                    <label for="language-select">Language:</label>
+                    <select id="language-select"></select>
+                </div>
+                <div class="control-group">
+                    <label for="rate">Rate: <span id="rate-value" class="rate-pitch-value">1</span></label>
+                    <input type="range" id="rate" min="0.5" max="2" value="1" step="0.1">
+                </div>
+                <div class="control-group">
+                    <label for="pitch">Pitch: <span id="pitch-value" class="rate-pitch-value">1</span></label>
+                    <input type="range" id="pitch" min="0" max="2" value="1" step="0.1">
+                </div>
+            </div>
+
+            <button id="speak-button">Generate Audio</button>
+            <div id="tts-status">Idle</div>
+        </div>
+
+    </div>
+    
+    <script>
+        const speechSynthesis = window.speechSynthesis;
+        const textToSpeakEl = document.getElementById('text-to-speak');
+        const speakButton = document.getElementById('speak-button');
+        const ttsStatus = document.getElementById('tts-status');
+        const languageSelect = document.getElementById('language-select');
+        const rateInput = document.getElementById('rate');
+        const rateValue = document.getElementById('rate-value');
+        const pitchInput = document.getElementById('pitch');
+        const pitchValue = document.getElementById('pitch-value');
+
+        const languages = [
+            { name: 'English (US)', code: 'en-US' }, { name: 'Hindi (India)', code: 'hi-IN' },
+            { name: 'Bengali (India)', code: 'bn-IN' }, { name: 'Gujarati (India)', code: 'gu-IN' },
+            { name: 'Kannada (India)', code: 'kn-IN' }, { name: 'Malayalam (India)', code: 'ml-IN' },
+            { name: 'Marathi (India)', code: 'mr-IN' }, { name: 'Tamil (India)', code: 'ta-IN' },
+            { name: 'Telugu (India)', code: 'te-IN' }, { name: 'Arabic (Egypt)', code: 'ar-EG' },
+            { name: 'Chinese (Mandarin)', code: 'zh-CN' }, { name: 'Dutch (Netherlands)', code: 'nl-NL' },
+            { name: 'French (France)', code: 'fr-FR' }, { name: 'German (Germany)', code: 'de-DE' },
+            { name: 'Italian (Italy)', code: 'it-IT' }, { name: 'Japanese (Japan)', code: 'ja-JP' },
+            { name: 'Korean (South Korea)', code: 'ko-KR' }, { name: 'Portuguese (Brazil)', code: 'pt-BR' },
+            { name: 'Russian (Russia)', code: 'ru-RU' }, { name: 'Spanish (Spain)', code: 'es-ES' },
+            { name: 'Turkish (Turkey)', code: 'tr-TR' },
+        ];
+        
+        let voices = [];
+
+        function initializeTTS() {
+            languageSelect.innerHTML = '';
+            languages.forEach(lang => {
+                const option = document.createElement('option');
+                option.textContent = lang.name;
+                option.setAttribute('value', lang.code);
+                languageSelect.appendChild(option);
+            });
+            // It's better to get voices once the onvoiceschanged event has fired.
+            function populateVoiceList() {
+                voices = speechSynthesis.getVoices();
+            }
+            populateVoiceList();
+            if (speechSynthesis.onvoiceschanged !== undefined) {
+                speechSynthesis.onvoiceschanged = populateVoiceList;
+            }
+        }
+        
+        initializeTTS();
+
+        rateInput.addEventListener('input', () => { rateValue.textContent = rateInput.value; });
+        pitchInput.addEventListener('input', () => { pitchValue.textContent = pitchInput.value; });
+
+        speakButton.addEventListener('click', () => {
+            if (speechSynthesis.speaking) { speechSynthesis.cancel(); }
+            const text = textToSpeakEl.value;
+            if (text.trim() !== '') {
+                const utterance = new SpeechSynthesisUtterance(text);
+                const selectedLangCode = languageSelect.selectedOptions[0].value;
+                const selectedVoice = voices.find(voice => voice.lang === selectedLangCode);
+                
+                utterance.voice = selectedVoice || null;
+                if (!selectedVoice) {
+                    utterance.lang = selectedLangCode;
+                    console.warn(`No specific voice found for ${selectedLangCode}. Using language fallback.`);
+                }
+                
+                utterance.rate = parseFloat(rateInput.value);
+                utterance.pitch = parseFloat(pitchInput.value);
+                utterance.onstart = () => {
+                    ttsStatus.textContent = 'Speaking...';
+                    ttsStatus.classList.add('speaking');
+                    speakButton.disabled = true;
+                };
+                utterance.onend = () => {
+                    ttsStatus.textContent = 'Finished.';
+                    ttsStatus.classList.remove('speaking');
+                    speakButton.disabled = false;
+                };
+                utterance.onerror = (event) => {
+                    console.error('Speech synthesis error:', event.error);
+                    ttsStatus.textContent = 'Error!';
+                    ttsStatus.classList.remove('speaking');
+                    speakButton.disabled = false;
+                };
+                speechSynthesis.speak(utterance);
+            } else {
+                ttsStatus.textContent = "Please enter some text.";
+            }
+        });
+
+        document.querySelectorAll('.card-link').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
